@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\ISC HG_ALTA SOFTWARE\\Demo\\Demo\\Demo.csproj": {}
+    "C:\\Users\\minhk\\Downloads\\Demo\\Demo\\Demo.csproj": {}
   },
   "projects": {
-    "C:\\ISC HG_ALTA SOFTWARE\\Demo\\Demo\\Demo.csproj": {
+    "C:\\Users\\minhk\\Downloads\\Demo\\Demo\\Demo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\ISC HG_ALTA SOFTWARE\\Demo\\Demo\\Demo.csproj",
+        "projectUniqueName": "C:\\Users\\minhk\\Downloads\\Demo\\Demo\\Demo.csproj",
         "projectName": "Demo",
-        "projectPath": "C:\\ISC HG_ALTA SOFTWARE\\Demo\\Demo\\Demo.csproj",
+        "projectPath": "C:\\Users\\minhk\\Downloads\\Demo\\Demo\\Demo.csproj",
         "packagesPath": "C:\\Users\\minhk\\.nuget\\packages\\",
-        "outputPath": "C:\\ISC HG_ALTA SOFTWARE\\Demo\\Demo\\obj\\",
+        "outputPath": "C:\\Users\\minhk\\Downloads\\Demo\\Demo\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -43,6 +43,26 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[6.0.18, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
