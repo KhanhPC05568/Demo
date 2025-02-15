@@ -1,4 +1,5 @@
 ﻿using Demo.DTOs.Requests;
+using Demo.DTOs.Responses;
 using Demo.Interface.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,22 +18,37 @@ public class RoleController : ControllerBase
    [HttpPost]
    public async Task<IActionResult> CreateRole([FromBody] RoleRequest roleRequest)
    {
+       var response = await _roleService.CreateRoleAsync(roleRequest);
 
-       await _roleService.CreateRoleAsync(roleRequest);
-       return Ok("Role created successfully.");
+       if (response.Status == 1)
+       {
+           return BadRequest(new ApiResponse(response.Status, response.Message,response.Data)); 
+       }
 
+       return Ok(new ApiResponse(response.Status, response.Message, response.Data));
    }
+
    [HttpPut("{id?}")]
    public async Task<IActionResult> UpdateRoleAsync(String id, [FromBody] RoleRequest roleRequest)
    {
-       await _roleService.UpdateRoleAsync(id, roleRequest);
-       return Ok("Role updated successfully.");
+       var response =   await _roleService.UpdateRoleAsync(id, roleRequest);
+       if (response.Status == 1)
+       {
+           return BadRequest(new ApiResponse(response.Status, response.Message,response.Data)); 
+       }
+
+       return Ok(new ApiResponse(response.Status, response.Message, response.Data));
    }
 
    [HttpDelete("{id?}")]
-   public async Task<IActionResult> DeleteCourse(String id)
+   public async Task<IActionResult> DeleteRole(String id)
    {
-       await _roleService.DeleteRoleAsync(id);
-       return Ok("Role deleted successfully.");
+   var response =    await _roleService.DeleteRoleAsync(id);
+       if (response.Status == 1)
+       {
+           return BadRequest(new ApiResponse(response.Status, response.Message,response.Data)); 
+       }
+
+       return Ok(new ApiResponse(response.Status, response.Message, response.Data));
    }
 }

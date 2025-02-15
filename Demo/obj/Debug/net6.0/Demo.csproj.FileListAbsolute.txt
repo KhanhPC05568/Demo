@@ -209,3 +209,10 @@ C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalys
 C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\minhk\Downloads\Demo\Demo\obj\Debug\net6.0\Demo.csproj.CopyComplete
+C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll

@@ -1,10 +1,11 @@
 ﻿using Demo.DTOs.Requests;
+using Demo.DTOs.Responses;
 
 namespace Demo.Interface.Services;
 
 public interface IRoleService
 {
-    Task CreateRoleAsync(RoleRequest roleRequest);
-    Task UpdateRoleAsync(string id, RoleRequest roleRequest);
-    Task DeleteRoleAsync(string id);
+    Task<ApiResponse> CreateRoleAsync(RoleRequest roleRequest);
+    Task<ApiResponse> UpdateRoleAsync(string id, RoleRequest roleRequest);
+    Task<ApiResponse> DeleteRoleAsync(string id);
 }
