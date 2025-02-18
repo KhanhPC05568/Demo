@@ -41,7 +41,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAllowAccessRepository, AllowAccessRepository>();
+builder.Services.AddScoped<IInternRepository, InternRepository>();
 
+builder.Services.AddScoped<IInternService, InternService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAllowAccessService, AllowAccessSerivce>();

@@ -1,4 +1,6 @@
-﻿namespace Demo.Interface.Repositories;
+﻿using Demo.Models;
+
+namespace Demo.Interface.Repositories;
 
 public interface IRepository<T> where T : class
 {

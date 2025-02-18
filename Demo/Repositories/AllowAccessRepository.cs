@@ -47,5 +47,12 @@ namespace Demo.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<List<AllowAccess>> GetByRoleIdAsync(int roleId)
+        {
+            return await _context.AllowAccesses
+                .Where(aa => aa.RoleId == roleId)
+                .ToListAsync();
+        }
+
     }
 }
