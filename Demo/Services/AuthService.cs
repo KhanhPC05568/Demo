@@ -25,15 +25,16 @@ public class AuthService : IAuthService
     public string Authenticate(LoginRequest request)
     {
         var user = _context.Users.Include(u => u.Role)
-            .FirstOrDefault(u => u.FullName == request.FullName);
+            .FirstOrDefault(u => u.UserName == request.Username); 
 
-        if (user == null)
+        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password)) 
         {
             return null; 
         }
 
-        return GenerateToken(user);
+        return GenerateToken(user); 
     }
+
     private string GenerateToken(User user)
     {
         string keyString = _config["JwtSettings:SecretKey"];
@@ -45,10 +46,12 @@ public class AuthService : IAuthService
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));  
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var roleName = user.Role?.RoleName; 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.FullName),  // Thêm tên người dùng vào claims
-            new Claim("userId", user.UserId.ToString())   // Thêm userId vào claims
+            new Claim(ClaimTypes.Name, user.FullName),  
+            new Claim("userId", user.UserId.ToString()),   
+            new Claim(ClaimTypes.Role, roleName)   
         };
         var token = new JwtSecurityToken(
             _config["JwtSettings:Issuer"],

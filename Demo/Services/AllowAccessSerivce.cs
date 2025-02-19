@@ -21,23 +21,43 @@ public class AllowAccessSerivce : IAllowAccessService
 
     public async Task<ApiResponse> CreateAllowAccessAsync(AllowAccessRequest allowAccessRequest)
     {
-        var allowAccess = new AllowAccess
+       
+        var role = await _context.Roles.FindAsync(allowAccessRequest.RoleId);
+        if (role == null)
         {
-            AccessProperties = allowAccessRequest.AccessProperties,
-            TableName = allowAccessRequest.TableName,
-            RoleId = allowAccessRequest.RoleId,
-            Role = await _context.Roles.FindAsync(allowAccessRequest.RoleId)
-        };
-      await  _allowAccessRepository.AddAsync(allowAccess);
-        var allowAccessData = new
+            return new ApiResponse(1, "Vai trò không tồn tại." , null);
+        }
+
+  
+        var resultData = new List<object>();
+
+        var accessPropertiesList = allowAccessRequest.AccessProperties.Split(',');
+        
+        foreach (var accessProperty in accessPropertiesList)
         {
-            allowAccess.AllowAccessId,
-            allowAccess.TableName,
-            RoleName = allowAccess.Role != null ? allowAccess.Role.RoleName : "Chưa có vai trò",
-            allowAccess.AccessProperties
-        };
-        return new ApiResponse(0, "Đã tạo AllowAccess thành công", allowAccessData);
+            var allowAccess = new AllowAccess
+            {
+                AccessProperties = accessProperty.Trim(),
+                TableName = allowAccessRequest.TableName,
+                RoleId = allowAccessRequest.RoleId,
+                Role = role
+            };
+            
+            await _allowAccessRepository.AddAsync(allowAccess);
+            
+            resultData.Add(new
+            {
+                allowAccess.AllowAccessId,
+                allowAccess.TableName,
+                RoleName = allowAccess.Role != null ? allowAccess.Role.RoleName : "Chưa có vai trò",
+                AccessProperties = allowAccess.AccessProperties
+            });
+        }
+
+        return new ApiResponse(0, "Đã tạo AllowAccess thành công", resultData);
     }
+
+
 
     public async Task<ApiResponse> UpdateAllowAccessAsync(string id, AllowAccessRequest allowAccessRequest)
     {
@@ -56,6 +76,9 @@ public class AllowAccessSerivce : IAllowAccessService
         allowAccess.TableName = allowAccessRequest.TableName;
         allowAccess.RoleId = allowAccessRequest.RoleId;
         allowAccess.Role = await _context.Roles.FindAsync(allowAccessRequest.RoleId);
+        
+     await  _allowAccessRepository.UpdateAsync(allowAccess);
+        
         var allowAccessData = new
         {
             allowAccess.AllowAccessId,

@@ -26,14 +26,13 @@ namespace Demo.Services
 
  public async Task<ApiResponse> GetInternAsync(string token)
 {
-    // Extract userId from the token
+
     var userId = GetUserIdFromToken(token);
     if (userId == null)
     {
         return new ApiResponse(1, "Token is invalid or missing userId.", null);
     }
 
-    // Get user information based on userId extracted from token
     var user = await _userRepository.GetByIdAsync(userId.Value);
     if (user == null)
     {
@@ -43,26 +42,29 @@ namespace Demo.Services
     var roleId = user.RoleId;
     List<AllowAccess> allowAccessList = await _allowAccessRepository.GetByRoleIdAsync(roleId);
 
-    if (allowAccessList == null || !allowAccessList.Any()) // Kiểm tra nếu không có quyền truy cập
+    if (allowAccessList == null || !allowAccessList.Any()) 
     {
         return new ApiResponse(1, "No permissions found for the role.", null);
     }
 
-    // Get interns list
+ 
     var interns = await _internRepository.GetAllAsync();
 
-    // Get the list of allowed columns based on the permissions of the role
     var allowedColumns = allowAccessList
-        .Where(allowAccess => allowAccess.RoleId == roleId) // Lọc theo RoleId
-        .Select(allowAccess => allowAccess.TableName)       // Chỉ lấy các TableName được phép
+        .Where(allowAccess => allowAccess.RoleId == roleId && allowAccess.TableName.Equals("Interns", StringComparison.Ordinal))
+        .Select(allowAccess => allowAccess.AccessProperties)
+        .Distinct()
         .ToList();
 
-    // Prepare filtered intern data based on allowed columns
+    if (!allowedColumns.Any())
+    {
+        return new ApiResponse(1, "No permissions found for the role.", null); 
+    }
+
     var filteredInterns = interns.Select(intern =>
     {
         var internData = new ExpandoObject() as IDictionary<string, object>;
-
-        // Check if the allowedColumns contains the relevant fields and add them to internData
+       
         if (allowedColumns.Contains("Id"))
         {
             internData.Add("Id", intern.Id);
@@ -207,6 +209,15 @@ namespace Demo.Services
         {
             internData.Add("HiddenToEnterprise", intern.HiddenToEnterprise);
         }
+        if (allowedColumns.Contains("CitizenIdentificationDate"))
+        {
+            internData.Add("CitizenIdentificationDate", intern.CitizenIdentificationDate);
+        }
+
+        if (allowedColumns.Contains("Internable"))
+        {
+            internData.Add("Internable", intern.Internable);
+        }
 
         return internData;
     }).ToList();
@@ -235,7 +246,7 @@ namespace Demo.Services
             }
             catch
             {
-                return null; // Trả về null nếu có lỗi trong quá trình đọc token
+                return null; 
             }
         }
     }

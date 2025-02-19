@@ -216,3 +216,4 @@ C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\Microsoft.IdentityModel.Prot
 C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\minhk\Downloads\Demo\Demo\bin\Debug\net6.0\BCrypt.Net-Next.dll

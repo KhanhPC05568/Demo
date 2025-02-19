@@ -24,18 +24,22 @@ public class UserService : IUserService
         {
             return new ApiResponse(1, "Dữ liệu đầu vào không hợp lệ", null);
         }
-
+        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(userRequest.Password);
         var user = new User
         {
+            UserName = userRequest.Username,
+            Password = hashedPassword,
             FullName = userRequest.FullName,
             RoleId = userRequest.RoleId,
             DateOfBirth = userRequest.DateOfBirth.Add(DateTime.Now.TimeOfDay).ToUniversalTime(),
-            Role = await _context.Roles.FindAsync(userRequest.RoleId) 
+            Role = await _context.Roles.FindAsync(userRequest.RoleId)
         };
 
-await _userRepository.AddAsync(user);
+        await _userRepository.AddAsync(user);
         var userData = new
         {
+            user.UserName,
+            userRequest.Password,
             user.UserId,
             user.FullName,
             RoleName = user.Role != null ? user.Role.RoleName : "Chưa có vai trò",
@@ -63,7 +67,7 @@ await _userRepository.AddAsync(user);
         user.DateOfBirth = userRequest.DateOfBirth.Add(DateTime.Now.TimeOfDay).ToUniversalTime();
         user.Role = await _context.Roles.FindAsync(userRequest.RoleId);
         await _userRepository.UpdateAsync(user);
-        
+
         var userData = new
         {
             user.UserId,
@@ -73,7 +77,6 @@ await _userRepository.AddAsync(user);
         };
 
         return new ApiResponse(0, "Đã cập nhật user thành công", userData);
-        
     }
 
     public async Task<ApiResponse> DeleteUserAsync(string id)
@@ -90,7 +93,7 @@ await _userRepository.AddAsync(user);
         }
 
         await _userRepository.DeleteAsync(userId);
-        
+
         return new ApiResponse(0, "Xóa thành công.", null);
     }
 }

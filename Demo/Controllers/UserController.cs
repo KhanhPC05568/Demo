@@ -1,6 +1,8 @@
 ﻿using Demo.DTOs.Requests;
 using Demo.DTOs.Responses;
 using Demo.Interface.Services;
+using Demo.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Controllers;
@@ -18,6 +20,7 @@ public class UserController : ControllerBase
   }
   
   [HttpPost]
+  [Authorize (Roles = "Admin")]
   public async Task<IActionResult> CreateUser([FromBody] UserRequest request)
   {
     var response = await _userService.CreateUserAsync(request);

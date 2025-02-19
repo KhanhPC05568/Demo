@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Demo.Migrations
 {
-    public partial class demo : Migration
+    public partial class UpdateDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,17 +53,17 @@ namespace Demo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-           name: "Roles",
-           columns: table => new
-           {
-               RoleId = table.Column<int>(type: "integer", nullable: false)
-                   .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-               RoleName = table.Column<string>(type: "text", nullable: false)
-           },
-           constraints: table =>
-           {
-               table.PrimaryKey("PK_Roles", x => x.RoleId);
-           });
+                name: "Roles",
+                columns: table => new
+                {
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleName = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.RoleId);
+                });
 
             migrationBuilder.CreateTable(
                 name: "AllowAccesses",
@@ -87,25 +87,27 @@ namespace Demo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-           name: "Users",
-           columns: table => new
-           {
-               UserId = table.Column<int>(type: "integer", nullable: false)
-                   .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-               FullName = table.Column<string>(type: "text", nullable: false),
-               DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-               RoleId = table.Column<int>(type: "integer", nullable: false)
-           },
-           constraints: table =>
-           {
-               table.PrimaryKey("PK_Users", x => x.UserId);
-               table.ForeignKey(
-                   name: "FK_Users_Roles_RoleId",
-                   column: x => x.RoleId,
-                   principalTable: "Roles",
-                   principalColumn: "RoleId",
-                   onDelete: ReferentialAction.Restrict);  // Đảm bảo không xóa User khi Role bị xóa
-           });
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FullName = table.Column<string>(type: "text", nullable: false),
+                    UserName = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_Users_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "RoleId",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AllowAccesses_RoleId",
@@ -117,6 +119,58 @@ namespace Demo.Migrations
                 table: "Users",
                 column: "RoleId",
                 unique: true);
+            
+            for (int i = 1; i <= 10; i++)
+{
+   migrationBuilder.InsertData(
+    "Interns", 
+    columns: new[] 
+    {
+        "Id", "InternName", "InternAddress", "ImageData", "DateOfBirth", "InternMail", 
+        "InternMailReplace", "University", "CitizenIdentification", "CitizenIdentificationDate", 
+        "Major", "Internable", "FullTime", "Cvfile", "InternSpecialized", "TelephoneNum", 
+        "InternStatus", "RegisteredDate", "HowToKnowAlta", "InternPassword", "ForeignLanguage", 
+        "YearOfExperiences", "PasswordStatus", "ReadyToWork", "InternEnabled", "EntranceTest", 
+        "Introduction", "Note", "LinkProduct", "JobFields", "HiddenToEnterprise"
+    },
+    values: new object[] 
+    {
+        i, // Id
+        "Intern-" + i.ToString("D2"), // InternName
+        $"Address-{i}", // InternAddress
+        null, // ImageData (Set null or your byte array)
+        new DateTime(1995, 6, 15).AddDays(i).ToUniversalTime(), // DateOfBirth (Converted to UTC)
+        $"intern{i.ToString("D2")}@example.com", // InternMail
+        $"replace{i.ToString("D2")}@example.com", // InternMailReplace
+        "University of Example", // University
+        "ID" + i.ToString("D5"), // CitizenIdentification
+        new DateTime(2020, 1, 1).AddDays(i).ToUniversalTime(), // CitizenIdentificationDate (Converted to UTC)
+        "Software Engineering", // Major
+        i % 2 == 0, // Internable (True for even i)
+        i % 2 != 0, // FullTime (True for odd i)
+        null, // Cvfile (Set null or file path)
+        i % 2 == 0 ? 1 : 2, // InternSpecialized (Alternating values)
+        $"123-456-78{i}", // TelephoneNum
+        "Active", // InternStatus
+        DateTime.UtcNow, // RegisteredDate (UTC)
+        "Referral", // HowToKnowAlta
+        "password123", // InternPassword
+        "English", // ForeignLanguage
+        (short)(i % 5), // YearOfExperiences
+        true, // PasswordStatus
+        true, // ReadyToWork
+        i % 2 == 0, // InternEnabled (True for even i)
+        i * 10.5f, // EntranceTest (Random values)
+        "Introduction text here", // Introduction
+        "Note text", // Note
+        "http://linkproduct.com", // LinkProduct
+        "Development", // JobFields
+        i % 2 == 0 // HiddenToEnterprise (True for even i)
+    }
+);
+}
+
+            
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
