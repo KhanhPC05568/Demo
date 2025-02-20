@@ -4,6 +4,7 @@ using Demo.DTOs.Responses;
 using Demo.Interface.Repositories;
 using Demo.Interface.Services;
 using Demo.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Services;
 
@@ -32,9 +33,19 @@ public class AllowAccessSerivce : IAllowAccessService
         var resultData = new List<object>();
 
         var accessPropertiesList = allowAccessRequest.AccessProperties.Split(',');
-        
+        var addedProperties = new List<string>();
         foreach (var accessProperty in accessPropertiesList)
         {
+            var existingAllowAccess = await _context.AllowAccesses
+                .FirstOrDefaultAsync(a => a.TableName == allowAccessRequest.TableName &&
+                                          a.RoleId == allowAccessRequest.RoleId &&
+                                          a.AccessProperties == accessProperty.Trim());
+
+            if (existingAllowAccess != null)
+            {
+                continue; 
+            }
+          
             var allowAccess = new AllowAccess
             {
                 AccessProperties = accessProperty.Trim(),
@@ -44,7 +55,7 @@ public class AllowAccessSerivce : IAllowAccessService
             };
             
             await _allowAccessRepository.AddAsync(allowAccess);
-            
+            addedProperties.Add(accessProperty);
             resultData.Add(new
             {
                 allowAccess.AllowAccessId,
@@ -53,7 +64,10 @@ public class AllowAccessSerivce : IAllowAccessService
                 AccessProperties = allowAccess.AccessProperties
             });
         }
-
+        if (addedProperties.Count == 0)
+        {
+            return new ApiResponse(1, "Dữ liệu đã có trong bảng", null);
+        }
         return new ApiResponse(0, "Đã tạo AllowAccess thành công", resultData);
     }
 

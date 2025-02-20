@@ -2,8 +2,10 @@
 using Demo.DTOs.Responses;
 using Demo.Interface.Services;
 using Demo.Models;
+using Demo.Sercurity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Demo.Controllers;
 
@@ -13,14 +15,16 @@ namespace Demo.Controllers;
 public class UserController : ControllerBase
 {
   private readonly IUserService _userService;
+  
 
-  public UserController(IUserService userService)
+  public UserController(IUserService userService )
   {
     _userService = userService;
   }
   
   [HttpPost]
-  [Authorize (Roles = "Admin")]
+  [ServiceFilter(typeof(AdminRoleSecurity))]
+  // [Authorize (Roles = "Admin")]
   public async Task<IActionResult> CreateUser([FromBody] UserRequest request)
   {
     var response = await _userService.CreateUserAsync(request);

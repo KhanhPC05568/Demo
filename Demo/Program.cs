@@ -1,8 +1,11 @@
 using System.Text;
+using System.Text.Json;
 using Demo.Data;
+using Demo.DTOs.Responses;
 using Demo.Interface.Repositories;
 using Demo.Interface.Services;
 using Demo.Repositories;
+using Demo.Sercurity;
 using Demo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +51,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAllowAccessService, AllowAccessSerivce>();
+builder.Services.AddScoped<AdminRoleSecurity>();
 
 
 builder.Services.AddEndpointsApiExplorer(); 
@@ -58,9 +62,13 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
 
+
+
+
 var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();
