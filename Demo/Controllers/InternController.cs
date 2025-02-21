@@ -19,7 +19,7 @@ namespace Demo.Controllers
         }
 
        
-        [HttpGet("getInternData")]
+        [HttpGet]
         [Authorize] 
         public async Task<ActionResult<ApiResponse>> GetInternData()
         {

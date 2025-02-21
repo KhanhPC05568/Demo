@@ -23,8 +23,7 @@ public class UserController : ControllerBase
   }
   
   [HttpPost]
-  [ServiceFilter(typeof(AdminRoleSecurity))]
-  // [Authorize (Roles = "Admin")]
+  [Authorize (Roles = "Admin")]
   public async Task<IActionResult> CreateUser([FromBody] UserRequest request)
   {
     var response = await _userService.CreateUserAsync(request);
@@ -38,6 +37,7 @@ public class UserController : ControllerBase
   }
 
   [HttpPut("{id?}")]
+  [Authorize (Roles = "Admin")]
   public async Task<IActionResult> UpdateUserAsync(String id, [FromBody] UserRequest request)
   {
     var response =   await _userService.UpdateUserAsync(id, request);
@@ -50,6 +50,7 @@ public class UserController : ControllerBase
   }
 
   [HttpDelete("{id?}")]
+  [Authorize (Roles = "Admin")]
   public async Task<IActionResult> DeleteUser(String id)
   {
     var response =    await _userService.DeleteUserAsync(id);
