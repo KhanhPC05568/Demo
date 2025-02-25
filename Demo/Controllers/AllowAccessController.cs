@@ -15,6 +15,23 @@ public class AllowAccessController : ControllerBase
    {
       _allowAccessService = allowAccessService;
    }
+
+   [HttpGet]
+   [Authorize]
+   public async Task<IActionResult> GetAllowAccess()
+   {
+      var response = await _allowAccessService.GetAllAllowAccess();
+
+      if (response.Status == 1)
+      {
+         return BadRequest(new ApiResponse(response.Status, response.Message,response.Data)); 
+      }
+
+      return Ok(new ApiResponse(response.Status, response.Message, response.Data));
+   }
+   
+   
+   
    [HttpPost]
    [Authorize]
    public async Task<IActionResult> CreateRole([FromBody] AllowAccessRequest request)

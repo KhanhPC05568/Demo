@@ -4,6 +4,7 @@ using Demo.DTOs.Responses;
 using Demo.Interface.Repositories;
 using Demo.Interface.Services;
 using Demo.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Services;
 
@@ -17,6 +18,22 @@ public class UserService : IUserService
         _userRepository = userRepository;
         _context = context;
     }
+
+
+    public async Task<ApiResponse> GetAllUser()
+    {
+    
+            var users = await _context.Users.Include(u => u.Role).ToListAsync();
+            var data = users.Select(u => new
+            {
+                FullName = u.FullName,
+                DateOfBirth = u.DateOfBirth,
+                RoleName = u.Role != null ? u.Role.RoleName : "No Role"
+            }).ToList();
+
+            return new ApiResponse(0, "Fill dữ liệu thành công", data);
+      
+}
 
     public async Task<ApiResponse> CreateUserAsync(UserRequest userRequest)
     {

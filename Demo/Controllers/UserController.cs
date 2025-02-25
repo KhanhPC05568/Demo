@@ -21,6 +21,20 @@ public class UserController : ControllerBase
   {
     _userService = userService;
   }
+
+  [HttpGet]
+  [Authorize (Roles = "Admin")]
+  public async Task<IActionResult> GetAllUsers()
+  {
+    var response = await _userService.GetAllUser();
+
+    if (response.Status == 1)
+    {
+      return BadRequest(new ApiResponse(response.Status, response.Message,response.Data)); 
+    }
+
+    return Ok(new ApiResponse(response.Status, response.Message, response.Data));
+  }
   
   [HttpPost]
   [Authorize (Roles = "Admin")]

@@ -16,6 +16,20 @@ public class RoleController : ControllerBase
       _roleService = roleService;
    }
 
+   [HttpGet]
+   [Authorize (Roles = "Admin")]
+   public async Task<IActionResult> GetRoles()
+   {
+       var response = await _roleService.GetAllRole();
+
+       if (response.Status == 1)
+       {
+           return BadRequest(new ApiResponse(response.Status, response.Message,response.Data)); 
+       }
+
+       return Ok(new ApiResponse(response.Status, response.Message, response.Data));
+   }
+
    [HttpPost]
    [Authorize (Roles = "Admin")]
    public async Task<IActionResult> CreateRole([FromBody] RoleRequest roleRequest)

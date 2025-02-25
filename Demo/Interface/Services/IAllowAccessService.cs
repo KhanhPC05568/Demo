@@ -5,6 +5,7 @@ namespace Demo.Interface.Services;
 
 public interface IAllowAccessService
 {
+    Task<ApiResponse> GetAllAllowAccess();
     Task<ApiResponse> CreateAllowAccessAsync(AllowAccessRequest allowAccessRequest);
     Task<ApiResponse> UpdateAllowAccessAsync(string id, AllowAccessRequest allowAccessRequest);
     Task<ApiResponse> DeleteAllowAccessAsync(string id);

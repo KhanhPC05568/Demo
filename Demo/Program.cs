@@ -13,10 +13,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+
 var secretKey = builder.Configuration["JwtSettings:SecretKey"];
 var key = Encoding.UTF8.GetBytes(secretKey);
-
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

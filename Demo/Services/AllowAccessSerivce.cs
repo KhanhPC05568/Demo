@@ -20,6 +20,22 @@ public class AllowAccessSerivce : IAllowAccessService
         _context = context;
     }
 
+    public async Task<ApiResponse> GetAllAllowAccess()
+    {
+    
+            var allowAccesses = await _context.AllowAccesses.Include(c => c.Role).ToListAsync();
+            var data = allowAccesses.Select(c => new 
+            {
+                RoleName = c.Role != null ? c.Role.RoleName : "No Role",
+                TableName = c.TableName,
+                AccessProperties = c.AccessProperties
+            }).ToList();
+
+            return new ApiResponse(0, "Fill dữ liệu thành công", data);
+    
+    }
+
+
     public async Task<ApiResponse> CreateAllowAccessAsync(AllowAccessRequest allowAccessRequest)
     {
        
