@@ -1,9 +1,11 @@
 ﻿using System.Dynamic;
 using System.IdentityModel.Tokens.Jwt;
+using Demo.Data;
 using Demo.DTOs.Responses;
 using Demo.Interface.Repositories;
 using Demo.Interface.Services;
 using Demo.Models;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Demo.Services
@@ -14,14 +16,15 @@ namespace Demo.Services
         private readonly IUserRepository _userRepository;
         private readonly IAllowAccessRepository _allowAccessRepository;
         private readonly IConfiguration _config;
-
+        private readonly ApplicationDbContext _context;
         public InternService(IInternRepository internRepository, IUserRepository userRepository,
-            IAllowAccessRepository allowAccessRepository, IConfiguration config)
+            IAllowAccessRepository allowAccessRepository, IConfiguration config, ApplicationDbContext context)
         {
             _internRepository = internRepository;
             _userRepository = userRepository;
             _allowAccessRepository = allowAccessRepository;
             _config = config;
+            _context = context;
         }
 
  public async Task<ApiResponse> GetInternAsync(string token)
@@ -47,182 +50,47 @@ namespace Demo.Services
         return new ApiResponse(1, "No permissions found for the role.", null);
     }
 
- 
+    
     var interns = await _internRepository.GetAllAsync();
-
+    
     var allowedColumns = allowAccessList
         .Where(allowAccess => allowAccess.RoleId == roleId && allowAccess.TableName.Equals("Interns", StringComparison.Ordinal))
-        .Select(allowAccess => allowAccess.AccessProperties)
+        .Select(allowAccess => allowAccess.AccessProperties) 
         .Distinct()
         .ToList();
 
     if (!allowedColumns.Any())
     {
-        return new ApiResponse(1, "No permissions found for the role.", null); 
+        return new ApiResponse(1, "No permissions found for the role.", null);
     }
+    
+    var internResponseList = new List<ExpandoObject>();
 
-    var filteredInterns = interns.Select(intern =>
+    foreach (var intern in interns)
     {
         var internData = new ExpandoObject() as IDictionary<string, object>;
-       
-        if (allowedColumns.Contains("Id"))
+        var internProperties = typeof(Intern).GetProperties();
+
+        foreach (var property in internProperties)
         {
-            internData.Add("Id", intern.Id);
+            if (allowedColumns.Contains(property.Name))
+            {
+                var value = property.GetValue(intern);
+                if (value != null && !(value is string str && string.IsNullOrEmpty(str)))
+                {
+                    internData[property.Name] = value;
+                }
+            }
         }
 
-        if (allowedColumns.Contains("InternName"))
+        if (internData.Any())
         {
-            internData.Add("InternName", intern.InternName);
+            internResponseList.Add((ExpandoObject)internData);
         }
+    }
+    
+    return new ApiResponse(0, "Lấy dữ liệu thành công", internResponseList);
 
-        if (allowedColumns.Contains("InternAddress"))
-        {
-            internData.Add("InternAddress", intern.InternAddress);
-        }
-
-        if (allowedColumns.Contains("ImageData"))
-        {
-            internData.Add("ImageData", intern.ImageData);
-        }
-
-        if (allowedColumns.Contains("DateOfBirth"))
-        {
-            internData.Add("DateOfBirth", intern.DateOfBirth);
-        }
-
-        if (allowedColumns.Contains("InternMail"))
-        {
-            internData.Add("InternMail", intern.InternMail);
-        }
-
-        if (allowedColumns.Contains("InternMailReplace"))
-        {
-            internData.Add("InternMailReplace", intern.InternMailReplace);
-        }
-
-        if (allowedColumns.Contains("University"))
-        {
-            internData.Add("University", intern.University);
-        }
-
-        if (allowedColumns.Contains("CitizenIdentification"))
-        {
-            internData.Add("CitizenIdentification", intern.CitizenIdentification);
-        }
-
-        if (allowedColumns.Contains("Major"))
-        {
-            internData.Add("Major", intern.Major);
-        }
-
-        if (allowedColumns.Contains("FullTime"))
-        {
-            internData.Add("FullTime", intern.FullTime);
-        }
-
-        if (allowedColumns.Contains("Cvfile"))
-        {
-            internData.Add("Cvfile", intern.Cvfile);
-        }
-
-        if (allowedColumns.Contains("InternSpecialized"))
-        {
-            internData.Add("InternSpecialized", intern.InternSpecialized);
-        }
-
-        if (allowedColumns.Contains("TelephoneNum"))
-        {
-            internData.Add("TelephoneNum", intern.TelephoneNum);
-        }
-
-        if (allowedColumns.Contains("InternStatus"))
-        {
-            internData.Add("InternStatus", intern.InternStatus);
-        }
-
-        if (allowedColumns.Contains("RegisteredDate"))
-        {
-            internData.Add("RegisteredDate", intern.RegisteredDate);
-        }
-
-        if (allowedColumns.Contains("HowToKnowAlta"))
-        {
-            internData.Add("HowToKnowAlta", intern.HowToKnowAlta);
-        }
-
-        if (allowedColumns.Contains("InternPassword"))
-        {
-            internData.Add("InternPassword", intern.InternPassword);
-        }
-
-        if (allowedColumns.Contains("ForeignLanguage"))
-        {
-            internData.Add("ForeignLanguage", intern.ForeignLanguage);
-        }
-
-        if (allowedColumns.Contains("YearOfExperiences"))
-        {
-            internData.Add("YearOfExperiences", intern.YearOfExperiences);
-        }
-
-        if (allowedColumns.Contains("PasswordStatus"))
-        {
-            internData.Add("PasswordStatus", intern.PasswordStatus);
-        }
-
-        if (allowedColumns.Contains("ReadyToWork"))
-        {
-            internData.Add("ReadyToWork", intern.ReadyToWork);
-        }
-
-        if (allowedColumns.Contains("InternEnabled"))
-        {
-            internData.Add("InternEnabled", intern.InternEnabled);
-        }
-
-        if (allowedColumns.Contains("EntranceTest"))
-        {
-            internData.Add("EntranceTest", intern.EntranceTest);
-        }
-
-        if (allowedColumns.Contains("Introduction"))
-        {
-            internData.Add("Introduction", intern.Introduction);
-        }
-
-        if (allowedColumns.Contains("Note"))
-        {
-            internData.Add("Note", intern.Note);
-        }
-
-        if (allowedColumns.Contains("LinkProduct"))
-        {
-            internData.Add("LinkProduct", intern.LinkProduct);
-        }
-
-        if (allowedColumns.Contains("JobFields"))
-        {
-            internData.Add("JobFields", intern.JobFields);
-        }
-
-        if (allowedColumns.Contains("HiddenToEnterprise"))
-        {
-            internData.Add("HiddenToEnterprise", intern.HiddenToEnterprise);
-        }
-        if (allowedColumns.Contains("CitizenIdentificationDate"))
-        {
-            internData.Add("CitizenIdentificationDate", intern.CitizenIdentificationDate);
-        }
-
-        if (allowedColumns.Contains("Internable"))
-        {
-            internData.Add("Internable", intern.Internable);
-        }
-
-        return internData;
-    }).ToList();
-
-    return new ApiResponse(0, "Lấy thông tin thành công.", filteredInterns);
 }
 
 

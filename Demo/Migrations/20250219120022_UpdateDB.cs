@@ -168,6 +168,27 @@ namespace Demo.Migrations
         i % 2 == 0 // HiddenToEnterprise (True for even i)
     }
 );
+migrationBuilder.InsertData(
+    "Role", columns: new[]
+    {
+        "RoleName",
+    },
+    values: new object[]
+    {
+        "Admin",
+    }
+    
+);migrationBuilder.InsertData(
+    "Role", columns: new[]
+    {
+        "RoleName",
+    },
+    values: new object[]
+    {
+        "User",
+    }
+    
+);
 }
 
             

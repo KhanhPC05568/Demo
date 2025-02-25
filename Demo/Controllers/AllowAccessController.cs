@@ -1,6 +1,7 @@
 ﻿using Demo.DTOs.Requests;
 using Demo.DTOs.Responses;
 using Demo.Interface.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Controllers;
@@ -15,6 +16,7 @@ public class AllowAccessController : ControllerBase
       _allowAccessService = allowAccessService;
    }
    [HttpPost]
+   [Authorize]
    public async Task<IActionResult> CreateRole([FromBody] AllowAccessRequest request)
    {
       var response = await _allowAccessService.CreateAllowAccessAsync(request);
@@ -28,6 +30,7 @@ public class AllowAccessController : ControllerBase
    }
 
    [HttpPut("{id?}")]
+   [Authorize]
    public async Task<IActionResult> UpdateRoleAsync(String id, [FromBody] AllowAccessRequest request)
    {
       var response =   await _allowAccessService.UpdateAllowAccessAsync(id, request);
@@ -40,6 +43,7 @@ public class AllowAccessController : ControllerBase
    }
 
    [HttpDelete("{id?}")]
+   [Authorize]
    public async Task<IActionResult> DeleteRole(String id)
    {
       var response =    await _allowAccessService.DeleteAllowAccessAsync(id);

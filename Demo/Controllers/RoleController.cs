@@ -1,6 +1,7 @@
 ﻿using Demo.DTOs.Requests;
 using Demo.DTOs.Responses;
 using Demo.Interface.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Controllers;
@@ -16,6 +17,7 @@ public class RoleController : ControllerBase
    }
 
    [HttpPost]
+   [Authorize (Roles = "Admin")]
    public async Task<IActionResult> CreateRole([FromBody] RoleRequest roleRequest)
    {
        var response = await _roleService.CreateRoleAsync(roleRequest);
@@ -29,6 +31,7 @@ public class RoleController : ControllerBase
    }
 
    [HttpPut("{id?}")]
+   [Authorize (Roles = "Admin")]
    public async Task<IActionResult> UpdateRoleAsync(String id, [FromBody] RoleRequest roleRequest)
    {
        var response =   await _roleService.UpdateRoleAsync(id, roleRequest);
@@ -41,6 +44,7 @@ public class RoleController : ControllerBase
    }
 
    [HttpDelete("{id?}")]
+   [Authorize (Roles = "Admin")]
    public async Task<IActionResult> DeleteRole(String id)
    {
    var response =    await _roleService.DeleteRoleAsync(id);
